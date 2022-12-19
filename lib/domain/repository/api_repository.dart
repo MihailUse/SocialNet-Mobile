@@ -1,72 +1,45 @@
 import 'package:dio/dio.dart';
-import 'package:social_net/domain/clients/local/session_client.dart';
-import 'package:social_net/domain/clients/remote/api_client.dart';
-import 'package:social_net/domain/clients/remote/auth_client.dart';
+import 'package:social_net/data/clients/api_client.dart';
+import 'package:social_net/data/clients/auth_client.dart';
+import 'package:social_net/data/internal/secure_local_storage.dart';
 import 'package:social_net/domain/config.dart';
 import 'package:social_net/domain/exceptions/un_authorized_exception.dart';
-import 'package:social_net/domain/models/token_refresh_request_model.dart';
+import 'package:social_net/data/models/auth/token_refresh_request_model.dart';
 import 'package:social_net/domain/repository/dio_Interceptors/error_handler_interceptor.dart';
 import 'package:social_net/ui/app_navigator.dart';
 
 class ApiRepository {
-  static final _sessionClient = SessionClient();
-  static final _baseOptions = BaseOptions();
-  static AuthClient? _authClient;
-  static ApiClient? _apiClient;
+  ApiRepository._() {
+    var apiDio = Dio(_baseOptions);
+    var authDio = Dio(_baseOptions);
 
-  static AuthClient get auth {
-    _authClient ??= AuthClient(
-      _createAuthClientDio(),
-      baseUrl: Config.apiBaseUrl,
-    );
-
-    return _authClient!;
-  }
-
-  static ApiClient get api {
-    _apiClient ??= ApiClient(
-      _createApiClientDio(),
-      baseUrl: Config.apiBaseUrl,
-    );
-
-    return _apiClient!;
-  }
-
-  static Dio _createAuthClientDio() {
-    final dio = Dio(_baseOptions);
-
-    dio.interceptors.addAll(<Interceptor>{
+    apiDio.interceptors.addAll(<Interceptor>{
       ErrorHandlerInterceptor(),
-      // _createAuthInterceptor(dio),
+      _createApiInterceptor(apiDio),
     });
 
-    return dio;
+    authDio.interceptors.add(ErrorHandlerInterceptor());
+
+    api = ApiClient(apiDio);
+    auth = AuthClient(authDio);
   }
 
-  static Dio _createApiClientDio() {
-    final dio = Dio(_baseOptions);
+  late final ApiClient api;
+  late final AuthClient auth;
+  final _baseOptions = BaseOptions(baseUrl: Config.apiBaseUrl);
+  final _sessionClient = SecureLocalStorage.instance;
+  static final ApiRepository instance = ApiRepository._();
 
-    dio.interceptors.addAll(<Interceptor>{
-      ErrorHandlerInterceptor(),
-      _createApiInterceptor(dio),
-    });
-
-    return dio;
+  static String getUserAvatarPath(String userId) {
+    return "${Config.apiBaseUrl}/api/Attach/GetUserAvatar?userId=$userId";
   }
 
-  static InterceptorsWrapper _createAuthInterceptor(Dio dio) {
-    return InterceptorsWrapper(onError: (e, handler) {
-      if (e is UnAuthorizedException) {
-        _sessionClient.clearTokens();
-        AppNavigator.toLoader();
-      }
-
-      return handler.next(e);
-    });
+  static String getPostAttachPath(String postId, String attachId) {
+    return "${Config.apiBaseUrl}/api/Attach/GetPostAttach?postId=$postId&attachId=$attachId";
   }
 
   // TODO: refactor this method
-  static QueuedInterceptorsWrapper _createApiInterceptor(Dio dio) {
+  QueuedInterceptorsWrapper _createApiInterceptor(Dio dio) {
     return QueuedInterceptorsWrapper(
       onRequest: (options, handler) async {
         final token = await _sessionClient.getToken();

@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:social_net/domain/models/error_response_model.dart';
+import 'package:social_net/data/models/errors/error_model.dart';
 
 class BadRequestException extends DioError {
-  final ErrorResponseModel? errorResponse;
+  final ErrorModel? errorResponse;
 
   BadRequestException({required super.requestOptions, this.errorResponse});
 }
