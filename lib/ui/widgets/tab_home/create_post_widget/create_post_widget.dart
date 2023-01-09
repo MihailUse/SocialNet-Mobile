@@ -13,13 +13,18 @@ class CreatePostWidget extends StatelessWidget {
     final post = context.select((CreatePostViewModel value) => value.state);
 
     return Scaffold(
-      appBar: AppBar(),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Center(
-            child: Form(
-              key: viewModel.formGlobalKey,
+      body: NestedScrollView(
+        floatHeaderSlivers: true,
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          const SliverAppBar(
+            title: Text("Create post"),
+          ),
+        ],
+        body: Center(
+          child: Form(
+            key: viewModel.formGlobalKey,
+            child: Padding(
+              padding: const EdgeInsets.all(22.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

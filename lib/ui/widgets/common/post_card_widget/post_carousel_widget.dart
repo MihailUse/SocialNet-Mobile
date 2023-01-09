@@ -1,6 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:social_net/data/models/post_model.dart';
-import 'package:social_net/ui/widgets/common/post_card_widget/post_image_widget.dart';
+import 'package:social_net/domain/repository/api_repository.dart';
 import 'package:social_net/ui/widgets/common/post_card_widget/post_carousel_indicator_widget.dart';
 
 class PostCarouselWidget extends StatefulWidget {
@@ -32,7 +33,7 @@ class PostCarouselWidgetState extends State<PostCarouselWidget> {
             onPageChanged: onAttachPageChanged,
             itemCount: postAttaches.length,
             itemBuilder: (context, pageIndex) {
-              return PostImageWidget(postId: widget.post.id, attachId: postAttaches[pageIndex].id);
+              return CachedNetworkImage(imageUrl: ApiRepository.getPostAttachPath(widget.post.id, postAttaches[pageIndex].id));
             },
           ),
           if (postAttaches.length > 1)

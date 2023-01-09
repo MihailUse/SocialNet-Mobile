@@ -9,7 +9,7 @@ import 'package:social_net/ui/navigation/nested_navigator_routes.dart';
 import 'package:social_net/ui/widgets/roots/main_widget/main_view_model.dart';
 
 class ProfileViewModel extends ChangeNotifier {
-  ProfileViewModel(this.context, [String? userId]) {
+  ProfileViewModel(this.context, String? userId) {
     asyncInit(userId);
   }
 
@@ -32,14 +32,14 @@ class ProfileViewModel extends ChangeNotifier {
 
     if (isCurrentUser) {
       final mainViewModel = context.read<MainViewModel>();
-      mainViewModel.addListener(() {
-        user = mainViewModel.user;
-      });
+      mainViewModel.addListener(() => user = mainViewModel.user);
+      user = mainViewModel.user;
       return;
     }
 
     try {
       await _syncService.syncUserById(userId ?? currentUserId!);
+      user = await _databaseService.getUserById(userId ?? currentUserId!);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -47,8 +47,6 @@ class ProfileViewModel extends ChangeNotifier {
         ),
       );
     }
-
-    user = await _databaseService.getUserById(userId ?? currentUserId!);
   }
 
   void onProfileMenuPressed() async {

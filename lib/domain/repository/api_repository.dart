@@ -38,7 +38,6 @@ class ApiRepository {
     return "${Config.apiBaseUrl}/api/Attach/GetPostAttach?postId=$postId&attachId=$attachId";
   }
 
-  // TODO: refactor this method
   QueuedInterceptorsWrapper _createApiInterceptor(Dio dio) {
     return QueuedInterceptorsWrapper(
       onRequest: (options, handler) async {

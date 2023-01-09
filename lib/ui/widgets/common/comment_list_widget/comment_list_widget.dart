@@ -51,7 +51,7 @@ class CommentListWidget extends StatelessWidget {
                   delegate: SliverChildListDelegate(
                     List.generate(
                       viewModel.comments!.length,
-                      (index) => CommentCardWidget(comment: viewModel.comments![index]),
+                      (index) => _CommentCardWidget(comment: viewModel.comments![index]),
                     ),
                   ),
                 )
@@ -97,8 +97,8 @@ class _CreateCommentTextFieldWidget extends StatelessWidget {
   }
 }
 
-class CommentCardWidget extends StatelessWidget {
-  CommentCardWidget({super.key, required this.comment});
+class _CommentCardWidget extends StatelessWidget {
+  _CommentCardWidget({required this.comment});
 
   final dateFormat = DateFormat("HH:mm");
   final CommentModel comment;
@@ -111,7 +111,7 @@ class CommentCardWidget extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
                 onTap: () async =>

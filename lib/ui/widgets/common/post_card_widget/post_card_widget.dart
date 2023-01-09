@@ -64,7 +64,7 @@ class PostCardWidget extends StatelessWidget {
             PostHeaderWidget(post: post),
             if (post.text != null)
               Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16),
                 child: RichText(
                   text: generateRichText(),
                   textAlign: TextAlign.start,
