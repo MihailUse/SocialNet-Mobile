@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:social_net/data/converters/boolean_converter.dart';
 
 import 'package:social_net/domain/entities/db_model.dart';
 
@@ -10,6 +11,8 @@ class Comment implements DbModel<String> {
   final String id;
   final String text;
   final int likeCount;
+  @BooleanConverter()
+  final num isLiked;
   final DateTime createdAt;
   final DateTime? updatedAt;
   final String? postId;
@@ -19,6 +22,7 @@ class Comment implements DbModel<String> {
     required this.id,
     required this.text,
     required this.likeCount,
+    required this.isLiked,
     required this.createdAt,
     this.updatedAt,
     this.postId,
@@ -28,7 +32,13 @@ class Comment implements DbModel<String> {
   factory Comment.fromJson(Map<String, dynamic> json) => _$CommentFromJson(json);
   Map<String, dynamic> toJson() => _$CommentToJson(this);
 
-  factory Comment.fromMap(Map<String, dynamic> map) => _$CommentFromJson(map);
+  factory Comment.fromMap(Map<String, dynamic> map) {
+    final resultMap = {
+      ...map,
+      "isLiked": map["isLiked"] as num == 1,
+    };
+    return _$CommentFromJson(resultMap);
+  }
   @override
   Map<String, dynamic> toMap() => _$CommentToJson(this);
 
@@ -36,6 +46,7 @@ class Comment implements DbModel<String> {
     String? id,
     String? text,
     int? likeCount,
+    num? isLiked,
     DateTime? createdAt,
     DateTime? updatedAt,
     String? postId,
@@ -45,6 +56,7 @@ class Comment implements DbModel<String> {
       id: id ?? this.id,
       text: text ?? this.text,
       likeCount: likeCount ?? this.likeCount,
+      isLiked: isLiked ?? this.isLiked,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       postId: postId ?? this.postId,

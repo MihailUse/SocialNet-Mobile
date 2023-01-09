@@ -8,14 +8,16 @@ class CommentModel {
   final String id;
   final String text;
   final int likeCount;
+  final bool isLiked;
+  final UserModel author;
   final DateTime createdAt;
   final DateTime? updatedAt;
-  final UserModel author;
 
   CommentModel({
     required this.id,
     required this.text,
     required this.likeCount,
+    required this.isLiked,
     required this.author,
     required this.createdAt,
     this.updatedAt,

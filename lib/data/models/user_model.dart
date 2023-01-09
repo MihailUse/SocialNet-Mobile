@@ -1,6 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:social_net/data/models/attach_model.dart';
-import 'package:social_net/domain/entities/attach.dart';
 
 part 'user_model.g.dart';
 
@@ -8,6 +7,7 @@ part 'user_model.g.dart';
 class UserModel {
   final String id;
   final String nickname;
+  final String? avatarLink;
   final String? fullName;
   final DateTime? deletedAt;
   final AttachModel? avatar;
@@ -15,6 +15,7 @@ class UserModel {
   UserModel({
     required this.id,
     required this.nickname,
+    this.avatarLink,
     this.fullName,
     this.deletedAt,
     this.avatar,
@@ -33,5 +34,23 @@ class UserModel {
   @override
   int get hashCode {
     return id.hashCode;
+  }
+
+  UserModel copyWith({
+    String? id,
+    String? nickname,
+    String? avatarLink,
+    String? fullName,
+    DateTime? deletedAt,
+    AttachModel? avatar,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      nickname: nickname ?? this.nickname,
+      avatarLink: avatarLink ?? this.avatarLink,
+      fullName: fullName ?? this.fullName,
+      deletedAt: deletedAt ?? this.deletedAt,
+      avatar: avatar ?? this.avatar,
+    );
   }
 }

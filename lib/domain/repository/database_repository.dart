@@ -6,10 +6,10 @@ import 'package:uuid/uuid.dart';
 
 class DatabaseRepository {
   DatabaseRepository._();
+  static final DatabaseRepository instance = DatabaseRepository._();
 
   late final Database _db;
-  final String _version = "1.0.014";
-  static final DatabaseRepository instance = DatabaseRepository._();
+  final _version = "1.0.7";
 
   Future<void> init() async {
     final databasePath = await getDatabasesPath();
@@ -37,8 +37,8 @@ class DatabaseRepository {
       return await _db.query(T.toString(), offset: skip, limit: take);
     }
 
-    var whereBuilder = <String>[];
-    var whereArgs = <dynamic>[];
+    final whereBuilder = <String>[];
+    final whereArgs = <dynamic>[];
 
     whereMap.forEach((key, value) {
       if (value is Iterable<dynamic>) {
@@ -48,12 +48,14 @@ class DatabaseRepository {
         whereBuilder.add("$key IN ($placeHolders)");
         whereArgs.addAll(stringValues);
       } else {
-        whereBuilder.add("$key = ?");
+        if (key.contains("LIKE")) {
+          whereBuilder.add("$key ?");
+        } else {
+          whereBuilder.add("$key = ?");
+        }
+
         whereArgs.add(value);
       }
-
-      whereBuilder.add("$key = ?");
-      whereArgs.add(value);
     });
 
     return await _db.query(
@@ -66,12 +68,12 @@ class DatabaseRepository {
   }
 
   Future<Map<String, dynamic>?> get<T extends DbModel<dynamic>>(dynamic id) async {
-    var res = await _db.query(T.toString(), where: 'id = ? ', whereArgs: [id]);
+    final res = await _db.query(T.toString(), where: 'id = ? ', whereArgs: [id]);
     return res.isNotEmpty ? res.first : null;
   }
 
   Future<void> insert<T extends DbModel<dynamic>>(T model) async {
-    var modelMap = model.toMap();
+    final modelMap = model.toMap();
 
     if (model.id == "") {
       modelMap["id"] = const Uuid().v4();
@@ -81,10 +83,10 @@ class DatabaseRepository {
   }
 
   Future<void> inserRange<T extends DbModel<dynamic>>(Iterable<T> values) async {
-    var batch = _db.batch();
+    final batch = _db.batch();
 
-    for (var row in values) {
-      var data = row.toMap();
+    for (final row in values) {
+      final data = row.toMap();
 
       if (row.id == "") {
         data["id"] = const Uuid().v4();

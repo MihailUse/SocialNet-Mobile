@@ -10,4 +10,8 @@ class UserService {
   Future<void> setUserAvatar(AttachModel attach) {
     return ApiRepository.instance.api.setUserAvatar(attach);
   }
+
+  Future<bool> changeUserFollowStatus(String followingId) {
+    return ApiRepository.instance.api.changeUserFollowStatus(followingId);
+  }
 }

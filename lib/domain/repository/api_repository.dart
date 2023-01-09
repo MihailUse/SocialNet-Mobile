@@ -6,12 +6,12 @@ import 'package:social_net/domain/config.dart';
 import 'package:social_net/domain/exceptions/un_authorized_exception.dart';
 import 'package:social_net/data/models/auth/token_refresh_request_model.dart';
 import 'package:social_net/domain/repository/dio_Interceptors/error_handler_interceptor.dart';
-import 'package:social_net/ui/app_navigator.dart';
+import 'package:social_net/ui/navigation/app_navigator.dart';
 
 class ApiRepository {
   ApiRepository._() {
-    var apiDio = Dio(_baseOptions);
-    var authDio = Dio(_baseOptions);
+    final apiDio = Dio(_baseOptions);
+    final authDio = Dio(_baseOptions);
 
     apiDio.interceptors.addAll(<Interceptor>{
       ErrorHandlerInterceptor(),
@@ -26,12 +26,12 @@ class ApiRepository {
 
   late final ApiClient api;
   late final AuthClient auth;
-  final _baseOptions = BaseOptions(baseUrl: Config.apiBaseUrl);
+  final _baseOptions = BaseOptions(baseUrl: Config.apiBaseUrl, connectTimeout: 2000);
   final _sessionClient = SecureLocalStorage.instance;
   static final ApiRepository instance = ApiRepository._();
 
-  static String getUserAvatarPath(String userId) {
-    return "${Config.apiBaseUrl}/api/Attach/GetUserAvatar?userId=$userId";
+  static String getUserAvatarPath(String link) {
+    return Config.apiBaseUrl + link;
   }
 
   static String getPostAttachPath(String postId, String attachId) {
@@ -65,7 +65,8 @@ class ApiRepository {
             }
 
             // get new tokens and save
-            final tokens = await auth.getTokensByRefresh(TokenRefreshRequestModel(refreshToken: refreshToken));
+            final tokens =
+                await auth.getTokensByRefresh(TokenRefreshRequestModel(refreshToken: refreshToken));
             await _sessionClient.setTokens(tokens);
 
             // set header

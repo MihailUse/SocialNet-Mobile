@@ -5,4 +5,8 @@ class PostService {
   Future<String> createPost(CreatePostModel postModel) async {
     return await ApiRepository.instance.api.createPost(postModel);
   }
+
+  Future<bool> changePostLikeStatus(String postId) async {
+    return await ApiRepository.instance.api.changePostLikeStatus(postId);
+  }
 }

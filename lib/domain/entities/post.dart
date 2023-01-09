@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-
 import 'package:social_net/data/converters/boolean_converter.dart';
 import 'package:social_net/domain/entities/db_model.dart';
 
@@ -14,6 +13,8 @@ class Post implements DbModel<String> {
   final num isCommentable;
   final num likeCount;
   final num commentCount;
+  @BooleanConverter()
+  final num isLiked;
   final DateTime createdAt;
   final DateTime? updatedAt;
   final String? authorId;
@@ -25,6 +26,7 @@ class Post implements DbModel<String> {
     required this.isCommentable,
     required this.likeCount,
     required this.commentCount,
+    required this.isLiked,
     this.authorId,
     this.popularCommentId,
     required this.createdAt,
@@ -35,11 +37,12 @@ class Post implements DbModel<String> {
   Map<String, dynamic> toJson() => _$PostToJson(this);
 
   factory Post.fromMap(Map<String, dynamic> map) {
-    var g = {
+    final resultMap = {
       ...map,
       "isCommentable": map["isCommentable"] as num == 1,
+      "isLiked": map["isLiked"] as num == 1,
     };
-    return _$PostFromJson(g);
+    return _$PostFromJson(resultMap);
   }
   @override
   Map<String, dynamic> toMap() => _$PostToJson(this);
@@ -47,9 +50,10 @@ class Post implements DbModel<String> {
   Post copyWith({
     String? id,
     String? text,
-    int? isCommentable,
-    int? likeCount,
-    int? commentCount,
+    num? isCommentable,
+    num? likeCount,
+    num? commentCount,
+    num? isLiked,
     DateTime? createdAt,
     DateTime? updatedAt,
     String? authorId,
@@ -61,6 +65,7 @@ class Post implements DbModel<String> {
       isCommentable: isCommentable ?? this.isCommentable,
       likeCount: likeCount ?? this.likeCount,
       commentCount: commentCount ?? this.commentCount,
+      isLiked: isLiked ?? this.isLiked,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       authorId: authorId ?? this.authorId,

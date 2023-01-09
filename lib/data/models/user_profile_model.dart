@@ -10,11 +10,13 @@ class UserProfileModel {
   final String nickname;
   final String? fullName;
   final String? about;
+  final String? avatarLink;
   final AttachModel? avatar;
-  final int followerCount;
-  final int followingCount;
-  final int postCount;
-  final DateTime createdAt;
+  final bool? isFollowing;
+  final int? followerCount;
+  final int? followingCount;
+  final int? postCount;
+  final DateTime? createdAt;
   final DateTime? updatedAt;
   final DateTime? deletedAt;
 
@@ -23,11 +25,13 @@ class UserProfileModel {
     required this.nickname,
     this.fullName,
     this.about,
+    this.avatarLink,
     this.avatar,
-    required this.followerCount,
-    required this.followingCount,
-    required this.postCount,
-    required this.createdAt,
+    this.isFollowing,
+    this.followerCount,
+    this.followingCount,
+    this.postCount,
+    this.createdAt,
     this.updatedAt,
     this.deletedAt,
   });
@@ -40,7 +44,9 @@ class UserProfileModel {
     String? nickname,
     String? fullName,
     String? about,
+    String? avatarLink,
     AttachModel? avatar,
+    bool? isFollowing,
     int? followerCount,
     int? followingCount,
     int? postCount,
@@ -53,7 +59,9 @@ class UserProfileModel {
       nickname: nickname ?? this.nickname,
       fullName: fullName ?? this.fullName,
       about: about ?? this.about,
+      avatarLink: avatarLink ?? this.avatarLink,
       avatar: avatar ?? this.avatar,
+      isFollowing: isFollowing ?? this.isFollowing,
       followerCount: followerCount ?? this.followerCount,
       followingCount: followingCount ?? this.followingCount,
       postCount: postCount ?? this.postCount,
