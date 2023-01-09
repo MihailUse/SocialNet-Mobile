@@ -38,9 +38,9 @@ class PostCardWidget extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.blue),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () async {
+                    mainViewModel.onSelectTab(MainNavigatorRoutes.search);
                     Navigator.of(mainViewModel.navigationKeys[MainNavigatorRoutes.search]!.currentContext!)
-                        .pushNamed(NestedNavigatorRoutes.search, arguments: text)
-                        .then((value) => mainViewModel.onSelectTab(MainNavigatorRoutes.search));
+                        .pushNamed(NestedNavigatorRoutes.search, arguments: text);
                   },
               )
             : TextSpan(
