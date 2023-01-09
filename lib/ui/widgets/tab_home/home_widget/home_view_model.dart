@@ -15,13 +15,12 @@ class HomeViewModel extends ChangeNotifier {
     scrollController.addListener(updateList);
   }
 
-  var _isNewPostLoading = false;
+  var _isLoading = false;
   final BuildContext context;
   final _syncService = SyncService();
   final _postService = PostService();
   final _databaseService = DatabaseService();
   final scrollController = ScrollController();
-  final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
   List<PostModel>? _posts;
   List<PostModel>? get posts => _posts;
@@ -66,12 +65,10 @@ class HomeViewModel extends ChangeNotifier {
     final current = scrollController.offset;
     final percent = (current / max * 100);
 
-    if ((!_isNewPostLoading && percent > 80) || current == max) {
-      _isNewPostLoading = true;
-      refreshIndicatorKey.currentState?.show();
-      posts?.addAll(posts?.sublist(0, 3) ?? []);
+    if ((!_isLoading && percent > 80) || current == max) {
+      _isLoading = true;
+      posts = [...posts!, ...posts!.sublist(0, 3)];
+      _isLoading = false;
     }
-
-    _isNewPostLoading = false;
   }
 }

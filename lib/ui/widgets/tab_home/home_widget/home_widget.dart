@@ -12,7 +12,6 @@ class HomeWidget extends StatelessWidget {
     final posts = context.select((HomeViewModel value) => value.posts);
 
     return RefreshIndicator(
-      key: viewModel.refreshIndicatorKey,
       onRefresh: viewModel.updateList,
       child: CustomScrollView(
         controller: viewModel.scrollController,
