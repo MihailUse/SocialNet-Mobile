@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:social_net/ui/navigation/main_navigator.dart';
 import 'package:social_net/ui/navigation/nested_navigator_routes.dart';
-import 'package:social_net/ui/widgets/common/camera_widget.dart';
+import 'package:social_net/ui/widgets/roots/camera_widget/camera_widget.dart';
+import 'package:social_net/ui/widgets/common/comment_list_widget/comment_list_widget.dart';
 import 'package:social_net/ui/widgets/tab_home/create_post_widget/create_post_widget.dart';
 import 'package:social_net/ui/widgets/tab_profile/edit_profile_widget/edit_profile_widget.dart';
 import 'package:social_net/ui/widgets/tab_profile/profile_menu_widget/profile_menu_widget.dart';
 import 'package:social_net/ui/widgets/tab_profile/profile_widget/profile_widget.dart';
+import 'package:social_net/ui/widgets/tab_search/search_widget/search_widget.dart';
 import 'package:social_net/ui/widgets/tab_search/tag_detail/tag_detail_widget.dart';
 
 class NestedNavigatorWidget extends StatelessWidget {
@@ -31,6 +33,14 @@ class NestedNavigatorWidget extends StatelessWidget {
 
       case NestedNavigatorRoutes.postCreate:
         return (_) => CreatePostWidget.create();
+
+      case NestedNavigatorRoutes.commentList:
+        if (arguments is! String) throw ArgumentError("Invalid CommentListWidget arguments");
+        return (_) => CommentListWidget.create(arguments);
+      
+      case NestedNavigatorRoutes.search:
+        if (arguments is! String) throw ArgumentError("Invalid SearchWidget arguments");
+        return (_) => SearchWidget.create(searchText: arguments);
 
       case NestedNavigatorRoutes.camera:
         if (arguments is! CameraWidgetArguments) throw ArgumentError("Invalid CameraWidget arguments");

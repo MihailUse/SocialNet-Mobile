@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:social_net/ui/widgets/common/camera_widget.dart';
+import 'package:social_net/ui/widgets/roots/camera_widget/camera_widget.dart';
 import 'package:social_net/ui/widgets/roots/auth_widget/auth_widget.dart';
 import 'package:social_net/ui/widgets/roots/main_widget/main_widget.dart';
 import 'package:social_net/ui/widgets/roots/registration_widget/registration_widget.dart';

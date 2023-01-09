@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:social_net/ui/widgets/common/post_widget/post_carousel_indicator_widget.dart';
+import 'package:social_net/ui/widgets/common/post_card_widget/post_carousel_indicator_widget.dart';
 import 'package:social_net/ui/widgets/common/select_file_alert_dialog.dart';
 import 'package:social_net/ui/widgets/tab_home/create_post_widget/create_post_view_model.dart';
 

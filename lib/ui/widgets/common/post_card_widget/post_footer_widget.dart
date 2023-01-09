@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:social_net/data/models/post_model.dart';
 import 'package:social_net/domain/services/post_service.dart';
+import 'package:social_net/ui/navigation/nested_navigator_routes.dart';
 
 class PostFooterWidget extends StatefulWidget {
   PostFooterWidget({super.key, required this.post});
@@ -41,7 +42,8 @@ class _PostFooterWidgetState extends State<PostFooterWidget> {
           const SizedBox(width: 6.0),
           if (widget.post.isCommentable)
             OutlinedButton(
-              onPressed: () {},
+              onPressed: () async =>
+                  await Navigator.of(context).pushNamed(NestedNavigatorRoutes.commentList, arguments: widget.post.id),
               child: Row(
                 children: [
                   const Icon(Icons.messenger_outline_rounded),

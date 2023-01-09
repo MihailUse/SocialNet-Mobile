@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:social_net/data/models/attach_model.dart';
 import 'package:social_net/domain/entities/db_model.dart';
 
 part 'attach.g.dart';
@@ -26,6 +27,14 @@ class Attach implements DbModel<String> {
   factory Attach.fromMap(Map<String, dynamic> map) => _$AttachFromJson(map);
   @override
   Map<String, dynamic> toMap() => _$AttachToJson(this);
+
+  factory Attach.fromModel(AttachModel attach, [String? postId]) => Attach(
+        id: attach.id,
+        name: attach.name,
+        mimeType: attach.mimeType,
+        size: attach.size,
+        postId: postId,
+      );
 
   Attach copyWith({
     String? id,

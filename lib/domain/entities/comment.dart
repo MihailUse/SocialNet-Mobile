@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:social_net/data/converters/boolean_converter.dart';
-
+import 'package:social_net/data/models/comment_model.dart';
 import 'package:social_net/domain/entities/db_model.dart';
 
 part 'comment.g.dart';
@@ -41,6 +41,17 @@ class Comment implements DbModel<String> {
   }
   @override
   Map<String, dynamic> toMap() => _$CommentToJson(this);
+
+  factory Comment.fromModel(CommentModel comment, String postId, String authorId) => Comment(
+        id: comment.id,
+        text: comment.text,
+        likeCount: comment.likeCount,
+        isLiked: comment.isLiked ? 1 : 0,
+        createdAt: comment.createdAt,
+        updatedAt: comment.updatedAt,
+        postId: postId,
+        authorId: authorId,
+      );
 
   Comment copyWith({
     String? id,

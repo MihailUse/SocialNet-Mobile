@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:social_net/data/models/post_model.dart';
-import 'package:social_net/ui/widgets/common/post_widget/post_card_widget.dart';
+import 'package:social_net/ui/widgets/common/post_card_widget/post_card_widget.dart';
 
 class SliverPostListWidget extends StatelessWidget {
   const SliverPostListWidget({

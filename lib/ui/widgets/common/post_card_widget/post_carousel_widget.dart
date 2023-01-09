@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:social_net/data/models/post_model.dart';
-import 'package:social_net/ui/widgets/common/post_widget/post_image_widget.dart';
-import 'package:social_net/ui/widgets/common/post_widget/post_carousel_indicator_widget.dart';
+import 'package:social_net/ui/widgets/common/post_card_widget/post_image_widget.dart';
+import 'package:social_net/ui/widgets/common/post_card_widget/post_carousel_indicator_widget.dart';
 
 class PostCarouselWidget extends StatefulWidget {
   const PostCarouselWidget({super.key, required this.post});

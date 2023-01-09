@@ -66,9 +66,9 @@ class SearchWidget extends StatelessWidget {
     );
   }
 
-  static Widget create() => ChangeNotifierProvider<SearchViewModel>(
+  static Widget create({String searchText = ""}) => ChangeNotifierProvider<SearchViewModel>(
         lazy: false,
-        create: (context) => SearchViewModel(context),
+        create: (context) => SearchViewModel(context, searchText),
         child: const SearchWidget(),
       );
 }

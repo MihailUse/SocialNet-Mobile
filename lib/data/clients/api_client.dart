@@ -30,8 +30,8 @@ abstract class ApiClient {
   @GET("/api/User/SearchUsers")
   Future<List<SearchListUserModel>> searchUsers(
     @Query("search") String search,
-    @Query("skip") int skip,
-    @Query("take") int take,
+    @Query("skip") int? skip,
+    @Query("take") int? take,
   );
 
   @POST("/api/User/ChangeFollowStatus")
@@ -39,7 +39,10 @@ abstract class ApiClient {
 
   // post
   @GET("/api/Post/GetPersonalPosts")
-  Future<List<PostModel>> getPersonalPosts(@Query("skip") int skip, @Query("take") int take);
+  Future<List<PostModel>> getPersonalPosts(
+    @Query("skip") int? skip,
+    @Query("take") int? take,
+  );
 
   @GET("/api/Post/GetPosts")
   Future<List<PostModel>> getPosts(@Query("skip") int skip, @Query("take") int take);
@@ -47,8 +50,8 @@ abstract class ApiClient {
   @GET("/api/Post/GetPostsByTag")
   Future<List<PostModel>> getPostsByTag(
     @Query("tagId") String tagId,
-    @Query("skip") int skip,
-    @Query("take") int take,
+    @Query("skip") int? skip,
+    @Query("take") int? take,
   );
 
   @POST("/api/Post/CreatePost")
@@ -68,8 +71,8 @@ abstract class ApiClient {
   @GET("/api/Tag/SearchTags")
   Future<List<TagModel>> searchTags(
     @Query("search") String search,
-    @Query("skip") int skip,
-    @Query("take") int take,
+    @Query("skip") int? skip,
+    @Query("take") int? take,
   );
 
   @GET("/api/Tag/GetTagById")
@@ -82,8 +85,8 @@ abstract class ApiClient {
   @GET("/api/Comment/GetPostComments")
   Future<List<CommentModel>> getPostComments(
     @Query("postId") String postId,
-    @Query("skip") String search,
-    @Query("take") int take,
+    @Query("skip") int? skip,
+    @Query("take") int? take,
   );
 
   @POST("/api/Comment/CreateComment")

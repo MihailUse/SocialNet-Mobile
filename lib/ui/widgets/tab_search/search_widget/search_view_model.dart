@@ -12,10 +12,12 @@ enum SearchTabs {
 }
 
 class SearchViewModel extends ChangeNotifier {
-  SearchViewModel(this.context) {
+  SearchViewModel(this.context, String searchText) {
     asyncInit();
-    searchController = TextEditingController(text: search);
+
+    searchController = TextEditingController(text: searchText);
     searchController.addListener(() => search = searchController.text);
+    search = searchText;
   }
 
   var _search = "";
@@ -83,6 +85,7 @@ class SearchViewModel extends ChangeNotifier {
 
   void onTabChenged(int value) {
     currentTab = SearchTabs.values[value];
+    asyncInit();
     notifyListeners();
   }
 

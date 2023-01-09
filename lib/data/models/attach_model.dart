@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:social_net/domain/entities/attach.dart';
 
 part 'attach_model.g.dart';
 
@@ -18,4 +19,11 @@ class AttachModel {
 
   factory AttachModel.fromJson(Map<String, dynamic> json) => _$AttachModelFromJson(json);
   Map<String, dynamic> toJson() => _$AttachModelToJson(this);
+
+  factory AttachModel.fromEntity(Attach attach) => AttachModel(
+        id: attach.id,
+        name: attach.name,
+        mimeType: attach.mimeType,
+        size: attach.size,
+      );
 }

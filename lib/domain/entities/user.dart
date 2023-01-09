@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import 'package:social_net/data/converters/boolean_converter.dart';
+import 'package:social_net/data/models/user_model.dart';
 import 'package:social_net/domain/entities/db_model.dart';
 
 part 'user.g.dart';
@@ -51,6 +52,14 @@ class User implements DbModel<String> {
   }
   @override
   Map<String, dynamic> toMap() => _$UserToJson(this);
+
+  factory User.fromModel(UserModel user) => User(
+      id: user.id,
+      nickname: user.nickname,
+      fullName: user.fullName,
+      avatarLink: user.avatarLink,
+      deletedAt: user.deletedAt,
+      avatarId: user.avatar?.id);
 
   User copyWith({
     String? id,

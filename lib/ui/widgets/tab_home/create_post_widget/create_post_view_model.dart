@@ -6,7 +6,7 @@ import 'package:social_net/data/models/create_post_model.dart';
 import 'package:social_net/domain/services/attach_service.dart';
 import 'package:social_net/domain/services/post_service.dart';
 import 'package:social_net/ui/navigation/app_navigator.dart';
-import 'package:social_net/ui/widgets/common/camera_widget.dart';
+import 'package:social_net/ui/widgets/roots/camera_widget/camera_widget.dart';
 
 class CreatePostViewModel extends ChangeNotifier {
   CreatePostViewModel(this.context) {

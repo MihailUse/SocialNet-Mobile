@@ -9,7 +9,7 @@ import 'package:social_net/domain/repository/api_repository.dart';
 import 'package:social_net/domain/services/attach_service.dart';
 import 'package:social_net/domain/services/user_service.dart';
 import 'package:social_net/ui/navigation/app_navigator.dart';
-import 'package:social_net/ui/widgets/common/camera_widget.dart';
+import 'package:social_net/ui/widgets/roots/camera_widget/camera_widget.dart';
 
 class EditProfileViewModel extends ChangeNotifier {
   EditProfileViewModel(this.context) {

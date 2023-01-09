@@ -8,6 +8,7 @@ abstract class NestedNavigatorRoutes {
   static const notification = "/notification";
 
   static const tag = "/tag";
+  static const commentList = "/commentList";
 
   static const profile = "/profile";
   static const profileMenu = "/profile/menu";

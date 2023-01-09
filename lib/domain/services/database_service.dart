@@ -21,8 +21,7 @@ class DatabaseService {
     final posts = (await DatabaseRepository.instance.getAll<Post>()).map((e) => Post.fromMap(e)).toList();
 
     for (var post in posts) {
-      final author =
-          await DatabaseRepository.instance.get<User>(post.authorId).then((value) => User.fromMap(value!));
+      final author = await DatabaseRepository.instance.get<User>(post.authorId).then((value) => User.fromMap(value!));
       final avatar = await DatabaseRepository.instance.get<Attach>(author.avatarId);
       final attaches = await DatabaseRepository.instance.getAll<Attach>(whereMap: {"postId": post.id});
       final popularComment = await DatabaseRepository.instance.get<Comment>(post.popularCommentId);
@@ -37,8 +36,7 @@ class DatabaseService {
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,
         popularComment: popularComment == null ? null : CommentModel.fromJson(popularComment),
-        author: UserModel.fromJson(author.toJson())
-            .copyWith(avatar: avatar == null ? null : AttachModel.fromJson(avatar)),
+        author: UserModel.fromJson(author.toJson()).copyWith(avatar: avatar == null ? null : AttachModel.fromJson(avatar)),
         attaches: attaches.map((e) => AttachModel.fromJson(e)).toList(),
       ));
     }
@@ -74,8 +72,11 @@ class DatabaseService {
       "nickname LIKE": "%$search%",
     };
 
-    final userMaps =
-        await DatabaseRepository.instance.getAll<User>(whereMap: whereMap, skip: skip, take: take);
+    final userMaps = await DatabaseRepository.instance.getAll<User>(
+      whereMap: whereMap,
+      skip: skip,
+      take: take,
+    );
     return userMaps.map((e) => User.fromMap(e)).toList();
   }
 
@@ -84,7 +85,11 @@ class DatabaseService {
       "name LIKE": "%$search%",
     };
 
-    final tagMaps = await DatabaseRepository.instance.getAll<Tag>(whereMap: whereMap, skip: skip, take: take);
+    final tagMaps = await DatabaseRepository.instance.getAll<Tag>(
+      whereMap: whereMap,
+      skip: skip,
+      take: take,
+    );
     return tagMaps.map((e) => Tag.fromMap(e)).toList();
   }
 
@@ -92,5 +97,44 @@ class DatabaseService {
     final tagMap = await DatabaseRepository.instance.get<Tag>(tagId);
     if (tagMap == null) return null;
     return Tag.fromMap(tagMap);
+  }
+
+  Future<List<CommentModel>> getPostComments(String postId, [int? skip, int? take]) async {
+    List<CommentModel> comments = [];
+
+    final commentMaps = await DatabaseRepository.instance.getAll<Comment>(
+      whereMap: {"postId": postId},
+      skip: skip,
+      take: take,
+    );
+
+    for (var commentMap in commentMaps) {
+      final comment = Comment.fromMap(commentMap);
+      final author = await DatabaseRepository.instance.get<User>(comment.authorId).then((value) => User.fromMap(value!));
+      final avatar = await DatabaseRepository.instance.get<Attach>(author.avatarId).then((value) => Attach.fromMap(value!));
+      final userModel = UserModel.fromEntity(author, AttachModel.fromEntity(avatar));
+
+      comments.add(CommentModel.fromEntity(comment, userModel));
+    }
+
+    return comments;
+  }
+
+  Future<void> updatePostComments(List<CommentModel> comments, String postId) async {
+    List<User> entityUsers = [];
+    List<Attach> entityAvatars = [];
+    List<Comment> entityComments = [];
+
+    for (final comment in comments) {
+      final author = User.fromModel(comment.author);
+      if (comment.author.avatar != null) entityAvatars.add(Attach.fromModel(comment.author.avatar!));
+
+      entityUsers.add(author);
+      entityComments.add(Comment.fromModel(comment, postId, author.id));
+    }
+
+    await DatabaseRepository.instance.inserRange(entityAvatars);
+    await DatabaseRepository.instance.inserRange(entityUsers);
+    await DatabaseRepository.instance.inserRange(entityComments);
   }
 }

@@ -18,8 +18,7 @@ class PostHeaderWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
-        onTap: () async =>
-            await Navigator.of(context).pushNamed(NestedNavigatorRoutes.profile, arguments: author.id),
+        onTap: () async => await Navigator.of(context).pushNamed(NestedNavigatorRoutes.profile, arguments: author.id),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -31,10 +30,11 @@ class PostHeaderWidget extends StatelessWidget {
             ),
             const SizedBox(width: 16),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(author.nickname),
+                Text(author.nickname, style: Theme.of(context).textTheme.bodyLarge),
                 const SizedBox(height: 2),
-                Text(dateFormat.format(post.createdAt)),
+                Text(dateFormat.format(post.createdAt), style: Theme.of(context).textTheme.bodySmall),
               ],
             )
           ],

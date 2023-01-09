@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:social_net/data/models/post_model.dart';
 import 'package:social_net/domain/services/database_service.dart';
 import 'package:social_net/domain/services/post_service.dart';
 import 'package:social_net/domain/services/sync_service.dart';
+import 'package:social_net/ui/navigation/main_navigator.dart';
 import 'package:social_net/ui/navigation/nested_navigator_routes.dart';
+import 'package:social_net/ui/widgets/roots/main_widget/main_view_model.dart';
 
 class HomeViewModel extends ChangeNotifier {
   HomeViewModel(this.context) {
     asyncInit();
 
-    scrollController.addListener(() {
-      final max = scrollController.position.maxScrollExtent;
-      final current = scrollController.offset;
-      final percent = (current / max * 100);
-
-      if ((!_isNewPostLoading && percent > 80) || current == max) {
-        _isNewPostLoading = true;
-        refreshIndicatorKey.currentState?.show();
-      }
-    });
+    scrollController.addListener(updateList);
   }
 
   var _isNewPostLoading = false;
@@ -54,7 +48,10 @@ class HomeViewModel extends ChangeNotifier {
     await Navigator.of(context).pushNamed(NestedNavigatorRoutes.postCreate);
   }
 
-  void onNotificationsButtonPressed() {}
+  void onNotificationsButtonPressed() {
+    final mainViewModel = context.read<MainViewModel>();
+    mainViewModel.onSelectTab(MainNavigatorRoutes.notifications);
+  }
 
   void onCommentButtonPressed(String postId) async {}
   void onLikeButtonPressed(String postId) async {
@@ -65,7 +62,16 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<void> updateList() async {
-    await Future.delayed(const Duration(seconds: 2));
+    final max = scrollController.position.maxScrollExtent;
+    final current = scrollController.offset;
+    final percent = (current / max * 100);
+
+    if ((!_isNewPostLoading && percent > 80) || current == max) {
+      _isNewPostLoading = true;
+      refreshIndicatorKey.currentState?.show();
+      posts?.addAll(posts?.sublist(0, 3) ?? []);
+    }
+
     _isNewPostLoading = false;
   }
 }

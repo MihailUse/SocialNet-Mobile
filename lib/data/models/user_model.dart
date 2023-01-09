@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:social_net/data/models/attach_model.dart';
+import 'package:social_net/domain/entities/user.dart';
 
 part 'user_model.g.dart';
 
@@ -23,6 +24,15 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
+
+  factory UserModel.fromEntity(User user, [AttachModel? avatar]) => UserModel(
+        id: user.id,
+        nickname: user.nickname,
+        avatarLink: user.avatarLink,
+        fullName: user.fullName,
+        deletedAt: user.deletedAt,
+        avatar: avatar,
+      );
 
   @override
   bool operator ==(Object other) {
