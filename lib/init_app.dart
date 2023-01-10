@@ -1,14 +1,20 @@
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:social_net/data/models/notification_payload.dart';
 import 'package:social_net/domain/repository/database_repository.dart';
+import 'package:social_net/domain/services/notification_service.dart';
 import 'package:social_net/firebase_options.dart';
-import 'package:social_net/ui/navigation/app_navigator.dart';
 import 'package:social_net/utils.dart';
 
 Future<void> initApp() async {
   await DatabaseRepository.instance.init();
-  // await initFireBase();
+  await NotificationService.localNotifications
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(NotificationService.channels[NotificationChannel.main]!);
+  await initFireBase();
 }
 
 Future<void> initFireBase() async {
@@ -28,43 +34,25 @@ Future<void> initFireBase() async {
   FirebaseMessaging.onMessageOpenedApp.listen(catchMessage);
 }
 
-void catchMessage(RemoteMessage message) {
+void catchMessage(RemoteMessage message) async {
   "Got a message whilst in the foreground!".console();
   "Message data: ${message.data}".console();
 
   if (message.notification != null) {
-    showModal(message.notification!.title!, message.notification!.body!);
-    // var post = '81b4293b-e874-4f2d-a6e0-c0135006c75e';
-    // var ctx = AppNavigator.navigationKeys[TabItemEnum.home]?.currentContext;
-    // if (ctx != null) {
-    //   var appviewModel = ctx.read<AppViewModel>();
-    //   Navigator.of(ctx)
-    //       .pushNamed(TabNavigatorRoutes.postDetails, arguments: post);
-    //   appviewModel.selectTab(TabItemEnum.home);
-    // }
-  }
-}
+    final notification = message.notification!;
+    final channel = NotificationService.channels[NotificationChannel.main]!;
 
-void showModal(
-  String title,
-  String content,
-) {
-  final context = AppNavigator.navigatorKey.currentContext;
-  if (context != null) {
-    showDialog(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text("got it"),
-            )
-          ],
-        );
-      },
+    await NotificationService.localNotifications.show(
+      notification.hashCode,
+      notification.title,
+      notification.body,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          channel.id,
+          channel.name,
+        ),
+      ),
+      payload: message.data["data"] as String
     );
   }
 }

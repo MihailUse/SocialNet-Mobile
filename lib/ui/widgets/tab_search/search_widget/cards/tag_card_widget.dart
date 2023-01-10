@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:social_net/domain/entities/tag.dart';
+import 'package:social_net/data/models/tag_model.dart';
 import 'package:social_net/ui/navigation/nested_navigator_routes.dart';
 import 'package:social_net/ui/widgets/tab_search/search_widget/search_view_model.dart';
-import 'package:social_net/ui/widgets/tab_search/tag_detail/tag_detail_widget.dart';
+import 'package:social_net/ui/widgets/common/tag_detail/tag_detail_widget.dart';
 
 class TagCardWidget extends StatelessWidget {
   const TagCardWidget({super.key, required this.tag});
 
-  final Tag tag;
+  final TagModel tag;
 
   @override
   Widget build(BuildContext context) {

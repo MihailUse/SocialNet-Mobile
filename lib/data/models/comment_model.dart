@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+
 import 'package:social_net/data/models/user_model.dart';
 import 'package:social_net/domain/entities/comment.dart';
 
@@ -35,4 +36,24 @@ class CommentModel {
         author: author,
         createdAt: comment.createdAt,
       );
+
+  CommentModel copyWith({
+    String? id,
+    String? text,
+    int? likeCount,
+    bool? isLiked,
+    UserModel? author,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return CommentModel(
+      id: id ?? this.id,
+      text: text ?? this.text,
+      likeCount: likeCount ?? this.likeCount,
+      isLiked: isLiked ?? this.isLiked,
+      author: author ?? this.author,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

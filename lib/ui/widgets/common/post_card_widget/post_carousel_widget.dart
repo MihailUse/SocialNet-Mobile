@@ -32,9 +32,9 @@ class PostCarouselWidgetState extends State<PostCarouselWidget> {
           PageView.builder(
             onPageChanged: onAttachPageChanged,
             itemCount: postAttaches.length,
-            itemBuilder: (context, pageIndex) {
-              return CachedNetworkImage(imageUrl: ApiRepository.getPostAttachPath(widget.post.id, postAttaches[pageIndex].id));
-            },
+            itemBuilder: (context, pageIndex) => CachedNetworkImage(
+              imageUrl: ApiRepository.getPostAttachPath(widget.post.id, postAttaches[pageIndex].id),
+            ),
           ),
           if (postAttaches.length > 1)
             Align(

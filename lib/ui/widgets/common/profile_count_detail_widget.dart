@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CountDetailWidget extends StatelessWidget {
-  const CountDetailWidget({super.key, required this.value, required this.description});
+class ProfileCountDetailWidget extends StatelessWidget {
+  const ProfileCountDetailWidget({super.key, required this.value, required this.description});
 
   final String value;
   final String description;

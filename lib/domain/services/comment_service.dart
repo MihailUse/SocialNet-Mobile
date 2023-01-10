@@ -22,4 +22,8 @@ class CommentService {
   createComment(String postId, String text) async {
     await ApiRepository.instance.api.createComment(CreateCommentModel(text: text, postId: postId));
   }
+
+  Future<bool> changeCommentLikeStatus(String commentId) async {
+    return await ApiRepository.instance.api.changeCommentLikeStatus(commentId);
+  }
 }

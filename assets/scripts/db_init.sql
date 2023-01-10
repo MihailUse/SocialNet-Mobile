@@ -22,6 +22,7 @@ CREATE TABLE Post(
     likeCount           INTEGER     NOT NULL,
     commentCount        INTEGER     NOT NULL,
     isLiked             BOOLEAN     NOT NULL,
+    isPersonal          BOOLEAN     NOT NULL,
     createdAt           TEXT        NOT NULL,
     updatedAt           TEXT,
     authorId            TEXT        NOT NULL,
@@ -33,6 +34,7 @@ CREATE TABLE Attach(
     id              TEXT        NOT NULL PRIMARY KEY,
     name            TEXT        NOT NULL,
     size            INTEGER     NOT NULL,
+    link            TEXT        NOT NULL,
     mimeType        TEXT        NOT NULL,
     postId          TEXT        NULL,
     FOREIGN KEY(postId) REFERENCES Post(id)
@@ -57,4 +59,18 @@ CREATE TABLE Tag(
     postCount       INTEGER     NOT NULL,
     followerCount   INTEGER     NOT NULL,
     isFollowed      BOOLEAN     NOT NULL
+);
+
+CREATE TABLE Notification(
+    id                  TEXT        NOT NULL PRIMARY KEY,
+    title               TEXT        NOT NULL,
+    subTitle            TEXT,
+    body                TEXT,
+    fromUserId          TEXT,
+    toUserId            TEXT        NOT NULL,
+    notificationType    INTEGER     NOT NULL,
+    viewedAt            TEXT,
+    createdAt           TEXT        NOT NULL,
+    FOREIGN KEY(toUserId) REFERENCES User(id),
+    FOREIGN KEY(fromUserId) REFERENCES User(id)
 );

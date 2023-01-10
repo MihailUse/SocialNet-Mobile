@@ -9,6 +9,7 @@ class SearchListUserModel {
   final String nickname;
   final int followerCount;
   final String? fullName;
+  final String? avatarLink;
   final AttachModel? avatar;
 
   SearchListUserModel({
@@ -16,6 +17,7 @@ class SearchListUserModel {
     required this.nickname,
     required this.followerCount,
     this.fullName,
+    this.avatarLink,
     this.avatar,
   });
 

@@ -8,13 +8,15 @@ class AttachModel {
   final String id;
   final String name;
   final String mimeType;
-  final num size;
+  final int size;
+  final String? link;
 
   AttachModel({
     required this.id,
     required this.name,
     required this.mimeType,
     required this.size,
+    this.link,
   });
 
   factory AttachModel.fromJson(Map<String, dynamic> json) => _$AttachModelFromJson(json);
@@ -22,6 +24,7 @@ class AttachModel {
 
   factory AttachModel.fromEntity(Attach attach) => AttachModel(
         id: attach.id,
+        link: attach.link,
         name: attach.name,
         mimeType: attach.mimeType,
         size: attach.size,

@@ -4,7 +4,7 @@ import 'package:social_net/ui/widgets/tab_search/search_widget/cards/tag_card_wi
 import 'package:social_net/ui/widgets/tab_search/search_widget/search_view_model.dart';
 
 class TagTabWidget extends StatelessWidget {
-  const TagTabWidget({Key? key}) : super(key: key);
+  const TagTabWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

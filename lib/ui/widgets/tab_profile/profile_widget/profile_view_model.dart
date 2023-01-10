@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:social_net/data/internal/local_storage.dart';
 import 'package:social_net/data/models/user_profile_model.dart';
-import 'package:social_net/domain/services/database_service.dart';
-import 'package:social_net/domain/services/sync_service.dart';
 import 'package:social_net/domain/services/user_service.dart';
 import 'package:social_net/ui/navigation/nested_navigator_routes.dart';
+import 'package:social_net/ui/widgets/common/post_list_widget/post_list_view_model.dart';
 import 'package:social_net/ui/widgets/roots/main_widget/main_view_model.dart';
 
 class ProfileViewModel extends ChangeNotifier {
   ProfileViewModel(this.context, String? userId) {
     asyncInit(userId);
+
+    postListViewModel = PostListViewModel.personal(context);
   }
 
   final BuildContext context;
   bool isCurrentUser = false;
-  final _syncService = SyncService();
   final _userService = UserService();
-  final _databaseService = DatabaseService();
+  late PostListViewModel postListViewModel;
+  late final mainViewModel = context.read<MainViewModel>();
 
   UserProfileModel? _user;
   UserProfileModel? get user => _user;
@@ -26,20 +26,29 @@ class ProfileViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  @override
+  void dispose() {
+    if (isCurrentUser) {
+      mainViewModel.removeListener(mainViewModelListener);
+    }
+    super.dispose();
+  }
+
+  void mainViewModelListener() => user = mainViewModel.user;
+
   void asyncInit(String? userId) async {
-    final currentUserId = await LocalStorage.instance.getValue(LocalStorageKeys.currentUserId);
-    isCurrentUser = userId == null || currentUserId == userId;
+    userId ??= await _userService.getCurrentUserId();
+    isCurrentUser = await _userService.isCurrenUser(userId);
 
     if (isCurrentUser) {
-      final mainViewModel = context.read<MainViewModel>();
-      mainViewModel.addListener(() => user = mainViewModel.user);
-      user = mainViewModel.user;
-      return;
+      mainViewModel.addListener(mainViewModelListener);
     }
 
+    postListViewModel = PostListViewModel.postByuser(context, userId);
+    postListViewModel.addListener(notifyListeners);
+
     try {
-      await _syncService.syncUserById(userId ?? currentUserId!);
-      user = await _databaseService.getUserById(userId ?? currentUserId!);
+      user = await _userService.getUserById(userId);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

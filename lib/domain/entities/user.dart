@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-
 import 'package:social_net/data/converters/boolean_converter.dart';
 import 'package:social_net/data/models/user_model.dart';
 import 'package:social_net/domain/entities/db_model.dart';
@@ -15,7 +14,7 @@ class User implements DbModel<String> {
   final String? about;
   final String? avatarLink;
   @BooleanConverter()
-  final num? isFollowing;
+  final int? isFollowing;
   final int? followerCount;
   final int? followingCount;
   final int? postCount;
@@ -46,7 +45,7 @@ class User implements DbModel<String> {
   factory User.fromMap(Map<String, dynamic> map) {
     final resultMap = {
       ...map,
-      "isFollowing": (map["isFollowing"] ?? 0) as num == 1,
+      "isFollowing": (map["isFollowing"] ?? 0) as int == 1,
     };
     return _$UserFromJson(resultMap);
   }
@@ -54,12 +53,13 @@ class User implements DbModel<String> {
   Map<String, dynamic> toMap() => _$UserToJson(this);
 
   factory User.fromModel(UserModel user) => User(
-      id: user.id,
-      nickname: user.nickname,
-      fullName: user.fullName,
-      avatarLink: user.avatarLink,
-      deletedAt: user.deletedAt,
-      avatarId: user.avatar?.id);
+        id: user.id,
+        nickname: user.nickname,
+        fullName: user.fullName,
+        avatarLink: user.avatarLink,
+        deletedAt: user.deletedAt,
+        avatarId: user.avatar?.id,
+      );
 
   User copyWith({
     String? id,
@@ -67,7 +67,7 @@ class User implements DbModel<String> {
     String? fullName,
     String? about,
     String? avatarLink,
-    num? isFollowing,
+    int? isFollowing,
     int? followerCount,
     int? followingCount,
     int? postCount,

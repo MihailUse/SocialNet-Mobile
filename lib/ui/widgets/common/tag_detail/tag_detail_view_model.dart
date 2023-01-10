@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:social_net/domain/entities/tag.dart';
+import 'package:social_net/data/models/tag_model.dart';
 import 'package:social_net/domain/services/database_service.dart';
 import 'package:social_net/domain/services/sync_service.dart';
 import 'package:social_net/domain/services/tag_service.dart';
@@ -9,7 +9,7 @@ class TagDetailViewModel extends ChangeNotifier {
     asyncInit();
   }
 
-  Tag tag;
+  TagModel tag;
   final BuildContext context;
   final Function()? onChanged;
   final _tagService = TagService();
@@ -27,6 +27,8 @@ class TagDetailViewModel extends ChangeNotifier {
         ),
       );
     }
+
+    onChanged?.call();
   }
 
   void asyncInit() async {
@@ -41,7 +43,7 @@ class TagDetailViewModel extends ChangeNotifier {
     }
 
     tag = await _databaseService.getTagById(tag.id) ?? tag;
-    onChanged?.call();
+
     notifyListeners();
   }
 }

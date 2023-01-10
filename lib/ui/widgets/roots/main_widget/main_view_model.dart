@@ -1,21 +1,27 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
 import 'package:social_net/data/internal/local_storage.dart';
+import 'package:social_net/data/models/notification_payload.dart';
 import 'package:social_net/data/models/user_profile_model.dart';
-import 'package:social_net/domain/services/database_service.dart';
-import 'package:social_net/domain/services/sync_service.dart';
+import 'package:social_net/domain/services/notification_service.dart';
+import 'package:social_net/domain/services/user_service.dart';
 import 'package:social_net/ui/navigation/app_navigator.dart';
 import 'package:social_net/ui/navigation/main_navigator.dart';
+import 'package:social_net/ui/navigation/nested_navigator_routes.dart';
 
 class MainViewModel extends ChangeNotifier {
   MainViewModel(this.context) {
     asyncInit();
   }
 
-  var _currentTab = MainNavigator.initialRoute;
+  MainNavigatorRoutes _currentTab = MainNavigator.initialRoute;
   final BuildContext context;
-  final _syncService = SyncService();
-  final _databaseService = DatabaseService();
-  final navigationKeys = {
+  final _userService = UserService();
+
+  static final navigationKeys = {
     MainNavigatorRoutes.home: GlobalKey<NavigatorState>(),
     MainNavigatorRoutes.search: GlobalKey<NavigatorState>(),
     MainNavigatorRoutes.profile: GlobalKey<NavigatorState>(),
@@ -35,9 +41,27 @@ class MainViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  static BuildContext? getTabContext(MainNavigatorRoutes route) {
+    return MainViewModel.navigationKeys[route]!.currentContext;
+  }
+
   Future<void> asyncInit() async {
+    // init notifications
+    await NotificationService.localNotifications.initialize(
+      NotificationService.initializationSettings,
+      onDidReceiveBackgroundNotificationResponse: onDidReceiveNotificationResponse,
+      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
+    );
+
+    // init current user
+    final currentUserId = await LocalStorage.instance.getValue(LocalStorageKeys.currentUserId);
+    if (currentUserId == null) {
+      await AppNavigator.toAuth();
+      return;
+    }
+
     try {
-      await _syncService.syncCurrentUser();
+      user = await _userService.getUserById(currentUserId);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -45,14 +69,6 @@ class MainViewModel extends ChangeNotifier {
         ),
       );
     }
-
-    final currentUserId = await LocalStorage.instance.getValue(LocalStorageKeys.currentUserId);
-    if (currentUserId == null) {
-      await AppNavigator.toAuth();
-      return;
-    }
-
-    user = await _databaseService.getUserById(currentUserId);
   }
 
   void onSelectTab(MainNavigatorRoutes value) {
@@ -61,6 +77,25 @@ class MainViewModel extends ChangeNotifier {
       navigationKeys[value]!.currentState!.popUntil((route) => route.isFirst);
     } else {
       currentTab = value;
+    }
+  }
+
+  static void onDidReceiveNotificationResponse(NotificationResponse details) {
+    final notificationTabContext = MainViewModel.getTabContext(MainNavigatorRoutes.notifications);
+
+    if (notificationTabContext != null) {
+      final mainViewModel = notificationTabContext.read<MainViewModel>();
+      mainViewModel.onSelectTab(MainNavigatorRoutes.notifications);
+
+      if (details.payload != null) {
+        final payloadMap = jsonDecode(details.payload!) as Map<String, dynamic>;
+        final payload = NotificationPayload.fromJson(payloadMap);
+        Navigator.of(notificationTabContext).pushNamedAndRemoveUntil(
+          NestedNavigatorRoutes.notification,
+          (route) => false,
+          arguments: payload.notificationId,
+        );
+      }
     }
   }
 }

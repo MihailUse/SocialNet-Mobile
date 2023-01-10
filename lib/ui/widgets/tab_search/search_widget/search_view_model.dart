@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:social_net/data/models/post_model.dart';
-import 'package:social_net/domain/entities/tag.dart';
+import 'package:social_net/data/models/tag_model.dart';
 import 'package:social_net/domain/entities/user.dart';
 import 'package:social_net/domain/services/database_service.dart';
 import 'package:social_net/domain/services/sync_service.dart';
 
-enum SearchTabs {
+enum SearchTab {
   all,
   tags,
   users,
@@ -20,14 +20,15 @@ class SearchViewModel extends ChangeNotifier {
     search = searchText;
   }
 
-  var _search = "";
-  List<Tag> tags = [];
+  String _search = "";
+  List<TagModel> tags = [];
   List<User> users = [];
   List<PostModel> posts = [];
-  var currentTab = SearchTabs.all;
+  SearchTab currentTab = SearchTab.all;
   final _databaseService = DatabaseService();
   final _syncService = SyncService();
   final BuildContext context;
+  final scrollController = ScrollController();
   late final TextEditingController searchController;
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -39,39 +40,37 @@ class SearchViewModel extends ChangeNotifier {
 
   Icon get searchIcon {
     switch (currentTab) {
-      case SearchTabs.all:
+      case SearchTab.all:
         return const Icon(Icons.search);
-      case SearchTabs.tags:
+      case SearchTab.tags:
         return const Icon(Icons.tag);
-      case SearchTabs.users:
+      case SearchTab.users:
         return const Icon(Icons.alternate_email);
     }
   }
 
-  void asyncInit() async {
-    final limit = currentTab == SearchTabs.all ? 3 : 20;
-
+  Future<void> asyncInit() async {
     try {
       switch (currentTab) {
-        case SearchTabs.all:
-          await _syncService.syncSearchTags(search: search, take: limit);
-          await _syncService.syncSearchUsers(search: search, take: limit);
+        case SearchTab.all:
+          await _syncService.syncSearchTags(search: search);
+          await _syncService.syncSearchUsers(search: search);
           break;
 
-        case SearchTabs.tags:
-          await _syncService.syncSearchTags(search: search, take: limit);
+        case SearchTab.tags:
+          await _syncService.syncSearchTags(search: search);
           break;
 
-        case SearchTabs.users:
-          await _syncService.syncSearchUsers(search: search, take: limit);
+        case SearchTab.users:
+          await _syncService.syncSearchUsers(search: search);
           break;
       }
     } catch (e) {
       showError("failed to get ${currentTab.name} search list");
     }
 
-    users = await _databaseService.searchUsers(search, 0, limit);
-    tags = await _databaseService.searchTags(search, 0, limit);
+    users = await _databaseService.searchUsers(search);
+    tags = await _databaseService.searchTags(search);
     notifyListeners();
   }
 
@@ -84,7 +83,7 @@ class SearchViewModel extends ChangeNotifier {
   }
 
   void onTabChenged(int value) {
-    currentTab = SearchTabs.values[value];
+    currentTab = SearchTab.values[value];
     asyncInit();
     notifyListeners();
   }

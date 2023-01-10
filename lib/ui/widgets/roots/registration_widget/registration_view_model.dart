@@ -46,8 +46,7 @@ class RegistrationViewModel extends ChangeNotifier {
     emailController.addListener(() => state = state.copyWith(email: emailController.text));
     nicknameController.addListener(() => state = state.copyWith(nickname: nicknameController.text));
     passwordController.addListener(() => state = state.copyWith(password: passwordController.text));
-    passwordRetryController
-        .addListener(() => state = state.copyWith(passwordRetry: passwordRetryController.text));
+    passwordRetryController.addListener(() => state = state.copyWith(passwordRetry: passwordRetryController.text));
   }
 
   var _state = const RegistrationState();
@@ -124,7 +123,7 @@ class RegistrationViewModel extends ChangeNotifier {
 
   String? validateNickname(String? value) {
     if (value == null || value.isEmpty) return "nickname required";
-    if (value.length < 4) return "nickname is short";
+    if (value.length < 2) return "nickname is short";
     if (value.length > 64) return "nickname is too long";
     return null;
   }

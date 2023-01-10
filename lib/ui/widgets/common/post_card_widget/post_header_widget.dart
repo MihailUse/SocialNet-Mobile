@@ -1,9 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:social_net/data/models/post_model.dart';
-import 'package:social_net/domain/repository/api_repository.dart';
 import 'package:social_net/ui/navigation/nested_navigator_routes.dart';
+import 'package:social_net/ui/widgets/common/user_avatar_widget.dart';
 
 class PostHeaderWidget extends StatelessWidget {
   const PostHeaderWidget({super.key, required this.post});
@@ -12,7 +11,6 @@ class PostHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat("HH:mm");
     final author = post.author;
 
     return Padding(
@@ -22,19 +20,14 @@ class PostHeaderWidget extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CircleAvatar(
-              foregroundImage: author.avatarLink == null
-                  ? const AssetImage("./assets/person.jpg") as ImageProvider
-                  : CachedNetworkImageProvider(ApiRepository.getUserAvatarPath(author.avatarLink!)),
-              backgroundImage: const AssetImage("./assets/person.jpg"),
-            ),
+            UserAvatarWidget(avatarLink: author.avatarLink),
             const SizedBox(width: 16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(author.nickname, style: Theme.of(context).textTheme.bodyLarge),
                 const SizedBox(height: 2),
-                Text(dateFormat.format(post.createdAt), style: Theme.of(context).textTheme.bodySmall),
+                Text(DateFormat.yMEd().format(post.createdAt), style: Theme.of(context).textTheme.bodySmall),
               ],
             )
           ],

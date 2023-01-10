@@ -18,7 +18,7 @@ class MainWidget extends StatelessWidget {
         child: SafeArea(
           child: NestedNavigatorWidget(
             tabItem: tabItem,
-            navigatorKey: viewModel.navigationKeys[tabItem]!,
+            navigatorKey: MainViewModel.navigationKeys[tabItem]!,
           ),
         ),
       );
@@ -28,7 +28,7 @@ class MainWidget extends StatelessWidget {
       onTap: () => FocusScope.of(context).unfocus(),
       child: WillPopScope(
         onWillPop: () async {
-          final isRootTab = await viewModel.navigationKeys[viewModel.currentTab]!.currentState!.maybePop();
+          final isRootTab = await MainViewModel.navigationKeys[viewModel.currentTab]!.currentState!.maybePop();
 
           if (isRootTab) {
             if (viewModel.currentTab != MainNavigator.initialRoute) {

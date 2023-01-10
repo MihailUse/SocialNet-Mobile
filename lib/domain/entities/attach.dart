@@ -8,13 +8,15 @@ part 'attach.g.dart';
 class Attach implements DbModel<String> {
   @override
   final String id;
+  final String link;
   final String name;
   final String mimeType;
-  final num size;
+  final int size;
   final String? postId;
 
   Attach({
     required this.id,
+    required this.link,
     required this.name,
     required this.mimeType,
     required this.size,
@@ -30,6 +32,7 @@ class Attach implements DbModel<String> {
 
   factory Attach.fromModel(AttachModel attach, [String? postId]) => Attach(
         id: attach.id,
+        link: attach.link ?? "",
         name: attach.name,
         mimeType: attach.mimeType,
         size: attach.size,
@@ -38,14 +41,15 @@ class Attach implements DbModel<String> {
 
   Attach copyWith({
     String? id,
+    String? link,
     String? name,
     String? mimeType,
-    num? size,
-    String? link,
+    int? size,
     String? postId,
   }) {
     return Attach(
       id: id ?? this.id,
+      link: link ?? this.link,
       name: name ?? this.name,
       mimeType: mimeType ?? this.mimeType,
       size: size ?? this.size,

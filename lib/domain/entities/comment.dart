@@ -12,7 +12,7 @@ class Comment implements DbModel<String> {
   final String text;
   final int likeCount;
   @BooleanConverter()
-  final num isLiked;
+  final int isLiked;
   final DateTime createdAt;
   final DateTime? updatedAt;
   final String? postId;
@@ -35,7 +35,7 @@ class Comment implements DbModel<String> {
   factory Comment.fromMap(Map<String, dynamic> map) {
     final resultMap = {
       ...map,
-      "isLiked": map["isLiked"] as num == 1,
+      "isLiked": map["isLiked"] as int == 1,
     };
     return _$CommentFromJson(resultMap);
   }
@@ -57,7 +57,7 @@ class Comment implements DbModel<String> {
     String? id,
     String? text,
     int? likeCount,
-    num? isLiked,
+    int? isLiked,
     DateTime? createdAt,
     DateTime? updatedAt,
     String? postId,

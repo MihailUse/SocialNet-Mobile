@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:social_net/ui/widgets/tab_search/search_widget/cards/tag_card_widget.dart';
@@ -21,7 +22,7 @@ class AllTabWidget extends StatelessWidget {
             const Center(child: Text("not found"))
           else
             ...List.generate(
-              tags.length,
+              min(tags.length, 3),
               (index) => TagCardWidget(tag: tags[index]),
             ),
           const _ListLabel("Users"),
@@ -29,7 +30,7 @@ class AllTabWidget extends StatelessWidget {
             const Center(child: Text("not found"))
           else
             ...List.generate(
-              users.length,
+              min(users.length, 3),
               (index) => UserCardWidget(user: users[index]),
             ),
         ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:social_net/ui/widgets/common/sliver_post_list_widget.dart';
+import 'package:social_net/ui/widgets/common/post_list_widget/post_list_widget.dart';
 import 'package:social_net/ui/widgets/tab_home/home_widget/home_view_model.dart';
 
 class HomeWidget extends StatelessWidget {
@@ -8,13 +8,12 @@ class HomeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.read<HomeViewModel>();
-    final posts = context.select((HomeViewModel value) => value.posts);
+    final viewModel = context.watch<HomeViewModel>();
 
     return RefreshIndicator(
-      onRefresh: viewModel.updateList,
+      onRefresh: viewModel.postListViewModel.asyncInit,
       child: CustomScrollView(
-        controller: viewModel.scrollController,
+        controller: viewModel.postListViewModel.scrollController,
         slivers: [
           SliverAppBar(
             leadingWidth: 200,
@@ -37,13 +36,18 @@ class HomeWidget extends StatelessWidget {
               const SizedBox(width: 8),
             ],
           ),
-          posts == null
-              ? const SliverFillRemaining(child: Center(child: CircularProgressIndicator()))
-              : SliverPostListWidget(
-                  posts: posts,
-                  onLikeButtonPressed: viewModel.onLikeButtonPressed,
-                  onCommentButtonPressed: viewModel.onCommentButtonPressed,
-                ),
+          if (viewModel.postListViewModel.posts == null || viewModel.postListViewModel.posts!.isEmpty)
+            SliverFillRemaining(
+              child: Center(
+                  child: viewModel.postListViewModel.posts == null
+                      ? const CircularProgressIndicator()
+                      : const Text("posts not found")),
+            )
+          else
+            ChangeNotifierProvider.value(
+              value: viewModel.postListViewModel,
+              child: const PostListWidget(),
+            ),
         ],
       ),
     );

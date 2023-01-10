@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-
 import 'package:social_net/data/converters/boolean_converter.dart';
 import 'package:social_net/domain/entities/db_model.dart';
 
@@ -13,7 +12,7 @@ class Tag implements DbModel<String> {
   final int postCount;
   final int followerCount;
   @BooleanConverter()
-  final bool isFollowed;
+  final int isFollowed;
 
   Tag({
     required this.id,
@@ -29,7 +28,7 @@ class Tag implements DbModel<String> {
   factory Tag.fromMap(Map<String, dynamic> map) {
     final resultMap = {
       ...map,
-      "isFollowed": map["isFollowed"] as num == 1,
+      "isFollowed": map["isFollowed"] as int == 1,
     };
     return _$TagFromJson(resultMap);
   }
@@ -41,7 +40,7 @@ class Tag implements DbModel<String> {
     String? name,
     int? postCount,
     int? followerCount,
-    bool? isFollowed,
+    int? isFollowed,
   }) {
     return Tag(
       id: id ?? this.id,

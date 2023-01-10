@@ -13,21 +13,22 @@ class SearchWidget extends StatelessWidget {
     final viewModel = context.watch<SearchViewModel>();
 
     return Scaffold(
-      body: DefaultTabController(
-        length: SearchTabs.values.length,
-        child: NestedScrollView(
-          floatHeaderSlivers: true,
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            SliverAppBar(
-              floating: true,
-              title: TextField(
-                onChanged: (value) {
-                  if (value.startsWith("#") && viewModel.currentTab != SearchTabs.tags) {
-                    DefaultTabController.of(context)?.animateTo(SearchTabs.tags.index);
-                  }
-                },
-                controller: viewModel.searchController,
-                decoration: InputDecoration(
+      body: RefreshIndicator(
+        onRefresh: viewModel.asyncInit,
+        child: DefaultTabController(
+          length: SearchTab.values.length,
+          child: NestedScrollView(
+            floatHeaderSlivers: true,
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              SliverAppBar(
+                title: TextField(
+                  onChanged: (value) {
+                    if (value.startsWith("#") && viewModel.currentTab != SearchTab.tags) {
+                      DefaultTabController.of(context)?.animateTo(SearchTab.tags.index);
+                    }
+                  },
+                  controller: viewModel.searchController,
+                  decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(0),
                     fillColor: Colors.white,
                     filled: true,
@@ -46,20 +47,22 @@ class SearchWidget extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             onPressed: viewModel.clearSearch,
                             icon: const Icon(Icons.clear),
-                          )),
+                          ),
+                  ),
+                ),
+                bottom: TabBar(
+                  onTap: viewModel.onTabChenged,
+                  tabs: SearchTab.values.map((e) => Tab(text: e.name)).toList(),
+                ),
               ),
-              bottom: TabBar(
-                onTap: viewModel.onTabChenged,
-                tabs: SearchTabs.values.map((e) => Tab(text: e.name)).toList(),
-              ),
-            ),
-          ],
-          body: const TabBarView(
-            children: [
-              AllTabWidget(),
-              TagTabWidget(),
-              UserTabWidget(),
             ],
+            body: const TabBarView(
+              children: [
+                AllTabWidget(),
+                TagTabWidget(),
+                UserTabWidget(),
+              ],
+            ),
           ),
         ),
       ),

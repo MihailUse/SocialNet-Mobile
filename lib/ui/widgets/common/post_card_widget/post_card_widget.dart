@@ -14,12 +14,10 @@ class PostCardWidget extends StatelessWidget {
     super.key,
     required this.post,
     required this.onLikeButtonPressed,
-    required this.onCommentButtonPressed,
   });
 
   final PostModel post;
-  final Function() onLikeButtonPressed;
-  final Function() onCommentButtonPressed;
+  final Function(String) onLikeButtonPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +37,7 @@ class PostCardWidget extends StatelessWidget {
                 recognizer: TapGestureRecognizer()
                   ..onTap = () async {
                     mainViewModel.onSelectTab(MainNavigatorRoutes.search);
-                    Navigator.of(mainViewModel.navigationKeys[MainNavigatorRoutes.search]!.currentContext!)
+                    Navigator.of(MainViewModel.getTabContext(MainNavigatorRoutes.search)!)
                         .pushNamed(NestedNavigatorRoutes.search, arguments: text);
                   },
               )
@@ -75,7 +73,10 @@ class PostCardWidget extends StatelessWidget {
                 post: post,
               ),
             const Divider(),
-            PostFooterWidget(post: post)
+            PostFooterWidget(
+              post: post,
+              onLikeButtonPressed: () => onLikeButtonPressed(post.id),
+            ),
           ],
         ),
       ),

@@ -7,3 +7,7 @@ extension StringExtension on String {
     }
   }
 }
+
+extension Iso8061SerializableDateTime on DateTime {
+  String toJson() => toIso8601String();
+}

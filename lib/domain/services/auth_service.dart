@@ -15,9 +15,7 @@ class AuthService {
     final isAuthorized = refreshToken != null && token != null;
 
     if (isAuthorized) {
-      try {
-        // await _notificationService.subscribe();
-      } catch (e) {}
+      await _notificationService.subscribe();
     }
 
     return isAuthorized;
@@ -28,7 +26,7 @@ class AuthService {
     final tokens = await _authClient.getTokens(tokenRequestModel);
 
     await SecureLocalStorage.instance.setTokens(tokens);
-    // await _notificationService.subscribe();
+    await _notificationService.subscribe();
   }
 
   Future<void> createUser(String email, String nickname, String password, String passwordRetry) async {

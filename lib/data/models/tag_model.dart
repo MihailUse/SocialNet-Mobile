@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:social_net/domain/entities/tag.dart';
 
 part 'tag_model.g.dart';
 
@@ -20,4 +21,12 @@ class TagModel {
 
   factory TagModel.fromJson(Map<String, dynamic> json) => _$TagModelFromJson(json);
   Map<String, dynamic> toJson() => _$TagModelToJson(this);
+
+  factory TagModel.fromEntity(Tag tag) => TagModel(
+        id: tag.id,
+        name: tag.name,
+        postCount: tag.postCount,
+        followerCount: tag.followerCount,
+        isFollowed: tag.isFollowed == 1,
+      );
 }

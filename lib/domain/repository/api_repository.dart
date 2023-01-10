@@ -6,6 +6,7 @@ import 'package:social_net/domain/config.dart';
 import 'package:social_net/domain/exceptions/un_authorized_exception.dart';
 import 'package:social_net/data/models/auth/token_refresh_request_model.dart';
 import 'package:social_net/domain/repository/dio_Interceptors/error_handler_interceptor.dart';
+import 'package:social_net/domain/services/auth_service.dart';
 import 'package:social_net/ui/navigation/app_navigator.dart';
 
 class ApiRepository {
@@ -58,7 +59,7 @@ class ApiRepository {
             final refreshToken = await _sessionClient.getRefreshToken();
 
             if (refreshToken == null) {
-              _sessionClient.clearTokens();
+              AuthService().logout();
               AppNavigator.toLoader();
               return handler.next(e);
             }

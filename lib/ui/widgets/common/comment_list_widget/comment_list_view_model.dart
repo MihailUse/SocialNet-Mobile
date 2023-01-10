@@ -64,4 +64,17 @@ class CommentListViewModel extends ChangeNotifier {
     comments = await _commentService.getPostComments(postId, 0, comments!.length + 10);
     showCreateComment = false;
   }
+
+  void changeCommentLikeStatus(String commentId) async {
+    try {
+      final commentIndex = comments!.indexWhere((element) => element.id == commentId);
+      comments![commentIndex] = comments![commentIndex].copyWith(
+        isLiked: await _commentService.changeCommentLikeStatus(commentId),
+      );
+    } catch (e) {
+      showError("failed to update like status");
+    }
+
+    notifyListeners();
+  }
 }

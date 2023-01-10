@@ -1,11 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
 import 'package:social_net/data/models/comment_model.dart';
-import 'package:social_net/domain/repository/api_repository.dart';
 import 'package:social_net/ui/navigation/nested_navigator_routes.dart';
 import 'package:social_net/ui/widgets/common/comment_list_widget/comment_list_view_model.dart';
+import 'package:social_net/ui/widgets/common/user_avatar_widget.dart';
 
 class CommentListWidget extends StatelessWidget {
   const CommentListWidget({super.key});
@@ -98,13 +97,14 @@ class _CreateCommentTextFieldWidget extends StatelessWidget {
 }
 
 class _CommentCardWidget extends StatelessWidget {
-  _CommentCardWidget({required this.comment});
+  const _CommentCardWidget({required this.comment});
 
-  final dateFormat = DateFormat("HH:mm");
   final CommentModel comment;
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<CommentListViewModel>();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
       child: Card(
@@ -116,31 +116,36 @@ class _CommentCardWidget extends StatelessWidget {
               GestureDetector(
                 onTap: () async =>
                     await Navigator.of(context).pushNamed(NestedNavigatorRoutes.profile, arguments: comment.author.id),
-                child: CircleAvatar(
-                  foregroundImage: comment.author.avatarLink == null
-                      ? const AssetImage("./assets/person.jpg") as ImageProvider
-                      : CachedNetworkImageProvider(ApiRepository.getUserAvatarPath(comment.author.avatarLink!)),
-                  backgroundImage: const AssetImage("./assets/person.jpg"),
+                child: UserAvatarWidget(avatarLink: comment.author.avatarLink),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Text(comment.author.nickname, style: Theme.of(context).textTheme.bodyLarge),
+                      ),
+                      onTap: () async =>
+                          await Navigator.of(context).pushNamed(NestedNavigatorRoutes.profile, arguments: comment.author.id),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(comment.text),
+                    const SizedBox(height: 4),
+                    Text(DateFormat.yMEd().format(comment.createdAt), style: Theme.of(context).textTheme.bodySmall),
+                  ],
                 ),
               ),
               const SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Text(comment.author.nickname, style: Theme.of(context).textTheme.bodyLarge),
-                    ),
-                    onTap: () async =>
-                        await Navigator.of(context).pushNamed(NestedNavigatorRoutes.profile, arguments: comment.author.id),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(comment.text),
-                  const SizedBox(height: 4),
-                  Text(dateFormat.format(comment.createdAt), style: Theme.of(context).textTheme.bodySmall),
-                ],
-              )
+              IconButton(
+                onPressed: () => viewModel.changeCommentLikeStatus(comment.id),
+                icon: Icon(
+                  size: 16,
+                  comment.isLiked ? Icons.thumb_up_alt : Icons.thumb_up_alt_outlined,
+                ),
+              ),
             ],
           ),
         ),

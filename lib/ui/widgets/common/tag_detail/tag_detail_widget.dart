@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'package:social_net/domain/entities/tag.dart';
-import 'package:social_net/ui/widgets/common/count_detail_widget.dart';
-import 'package:social_net/ui/widgets/tab_search/tag_detail/tag_detail_view_model.dart';
+import 'package:social_net/data/models/tag_model.dart';
+import 'package:social_net/ui/widgets/common/profile_count_detail_widget.dart';
+import 'package:social_net/ui/widgets/common/tag_detail/tag_detail_view_model.dart';
 
 class TagDetailWidgetArguments {
-  final Tag tag;
+  final TagModel tag;
   final Function()? onChanged;
 
   TagDetailWidgetArguments({
@@ -48,11 +47,11 @@ class TagDetailWidget extends StatelessWidget {
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      CountDetailWidget(
+                      ProfileCountDetailWidget(
                         value: viewModel.tag.postCount.toString(),
                         description: "posts",
                       ),
-                      CountDetailWidget(
+                      ProfileCountDetailWidget(
                         value: viewModel.tag.followerCount.toString(),
                         description: "followers",
                       ),
@@ -78,8 +77,7 @@ class TagDetailWidget extends StatelessWidget {
     );
   }
 
-  static Widget create(TagDetailWidgetArguments arguments) =>
-      ChangeNotifierProvider<TagDetailViewModel>(
+  static Widget create(TagDetailWidgetArguments arguments) => ChangeNotifierProvider<TagDetailViewModel>(
         lazy: false,
         create: (context) => TagDetailViewModel(context, arguments.tag, arguments.onChanged),
         child: const TagDetailWidget(),
