@@ -14,9 +14,9 @@ class UserService {
       final currentUserId = await getCurrentUserId();
 
       try {
-        return await ApiRepository.instance.api.getUserProfile(currentUserId);
+        return await ApiRepository.instance.api.getUserProfile(currentUserId ?? "");
       } catch (e) {
-        final user = await _database.getUserById(currentUserId);
+        final user = await _database.getUserById(currentUserId ?? "");
         if (user == null) throw Exception("failed to load user profile");
         return user;
       }
@@ -32,8 +32,8 @@ class UserService {
     return userId == currentUserId;
   }
 
-  Future<String> getCurrentUserId() async {
-    return (await LocalStorage.instance.getValue(LocalStorageKeys.currentUserId))!;
+  Future<String?> getCurrentUserId() async {
+    return await LocalStorage.instance.getValue(LocalStorageKeys.currentUserId);
   }
 
   Future<UserProfileModel> getUserById(String userId) async {

@@ -4,10 +4,12 @@ import 'package:social_net/data/models/auth/token_request_model.dart';
 import 'package:social_net/data/models/create_user_model.dart';
 import 'package:social_net/domain/repository/api_repository.dart';
 import 'package:social_net/domain/services/notification_service.dart';
+import 'package:social_net/domain/services/user_service.dart';
 
 class AuthService {
   final _authClient = ApiRepository.instance.auth;
   final _notificationService = NotificationService();
+  final _userService = UserService();
 
   Future<bool> checkAuth() async {
     final token = await SecureLocalStorage.instance.getToken();
@@ -24,8 +26,10 @@ class AuthService {
   Future<void> login(String login, String password) async {
     final tokenRequestModel = TokenRequestModel(email: login, password: password);
     final tokens = await _authClient.getTokens(tokenRequestModel);
-
     await SecureLocalStorage.instance.setTokens(tokens);
+
+    final user = await ApiRepository.instance.api.getCurrentUserProfile();
+    await LocalStorage.instance.setValue(LocalStorageKeys.currentUserId, user.id);
     await _notificationService.subscribe();
   }
 

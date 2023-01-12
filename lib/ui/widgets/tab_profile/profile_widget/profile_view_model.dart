@@ -38,6 +38,8 @@ class ProfileViewModel extends ChangeNotifier {
 
   void asyncInit(String? userId) async {
     userId ??= await _userService.getCurrentUserId();
+    if (userId == null) return;
+
     isCurrentUser = await _userService.isCurrenUser(userId);
 
     if (isCurrentUser) {

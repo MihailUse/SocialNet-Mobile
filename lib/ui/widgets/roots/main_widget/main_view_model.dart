@@ -54,7 +54,10 @@ class MainViewModel extends ChangeNotifier {
     );
 
     // init current user
-    final currentUserId = await LocalStorage.instance.getValue(LocalStorageKeys.currentUserId);
+    // Future.delayed(const Duration(seconds: 1)).then((value) async {
+    var currentUserId = await LocalStorage.instance.getValue(LocalStorageKeys.currentUserId);
+    currentUserId ??= await _userService.getCurrentUserId();
+
     if (currentUserId == null) {
       await AppNavigator.toAuth();
       return;
@@ -69,6 +72,7 @@ class MainViewModel extends ChangeNotifier {
         ),
       );
     }
+    // });
   }
 
   void onSelectTab(MainNavigatorRoutes value) {
