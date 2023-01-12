@@ -98,7 +98,12 @@ class ImageCarouselWidget extends StatelessWidget {
             onPageChanged: viewModel.onAttachIndexChenged,
             itemCount: viewModel.attaches.length,
             itemBuilder: (context, pageIndex) {
-              return Image.file(viewModel.attaches[viewModel.currentAttachIndex]);
+              return Dismissible(
+                key: Key(viewModel.attaches[viewModel.currentAttachIndex].path),
+                direction: DismissDirection.vertical,
+                onDismissed: (direction) => viewModel.removeImage(pageIndex),
+                child: Image.file(viewModel.attaches[viewModel.currentAttachIndex]),
+              );
             },
           ),
           if (viewModel.attaches.length > 1)

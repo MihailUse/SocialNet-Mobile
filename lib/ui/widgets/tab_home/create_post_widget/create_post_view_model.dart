@@ -91,4 +91,11 @@ class CreatePostViewModel extends ChangeNotifier {
 
     await AppNavigator.toCamera(arguments);
   }
+
+  removeImage(int index) {
+    attaches.removeAt(index);
+    state.attaches!.removeAt(index);
+    currentAttachIndex = 0;
+    state = state.copyWith(attaches: state.attaches);
+  }
 }
